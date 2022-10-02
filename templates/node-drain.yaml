@@ -1,0 +1,79 @@
+{{ if not (has "node-drain" .Values.experiments.disabled) }}
+---
+apiVersion: litmuschaos.io/v1alpha1
+description:
+  message: |
+    Drain the node where application pod is scheduled
+kind: ChaosExperiment
+metadata:
+  name: node-drain
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubernetes-chaos.labels" . | indent 4 }}
+spec:
+  definition:
+    scope: Cluster
+    permissions:
+      - apiGroups:
+          - ""
+          - "batch"
+          - "litmuschaos.io"
+          - "apps"
+        resources:
+          - "jobs"
+          - "pods"
+          - "events"
+          - "pods/log"
+          - "pods/exec"
+          - "daemonsets"
+          - "pods/eviction"
+          - "chaosengines"
+          - "chaosexperiments"
+          - "chaosresults"
+        verbs:
+          - "create"
+          - "list"
+          - "get"
+          - "patch"
+          - "update"
+          - "delete"
+          - "deletecollection"
+      - apiGroups:
+          - ""
+        resources: 
+          - "nodes"
+        verbs:
+          - "get"
+          - "list"
+          - "patch"
+    image: "{{ .Values.image.litmusGO.repository }}:{{ .Values.image.litmusGO.tag }}"
+    imagePullPolicy: {{ .Values.image.litmusGO.pullPolicy }}
+    args:
+    - -c
+    - ./experiments -name node-drain
+    command:
+    - /bin/bash
+    env:
+
+    - name: TARGET_NODE
+      value: ''
+
+    - name: NODE_LABEL
+      value: ''
+
+    - name: TOTAL_CHAOS_DURATION
+      value: '60'
+
+    # Provide the LIB here
+    # Only litmus supported
+    - name: LIB
+      value: 'litmus'
+
+    # Period to wait before injection of chaos in sec
+    - name: RAMP_TIME
+      value: ''
+
+    labels:
+      name: node-drain
+      app.kubernetes.io/part-of: litmus
+{{ end }}

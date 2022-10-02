@@ -1,0 +1,79 @@
+{{ if not (has "pod-autoscaler" .Values.experiments.disabled) }}
+---
+apiVersion: litmuschaos.io/v1alpha1
+description:
+  message: |
+    Scale the application replicas and test the node autoscaling on cluster
+kind: ChaosExperiment
+metadata:
+  name: pod-autoscaler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubernetes-chaos.labels" . | indent 4 }}
+spec:
+  definition:
+    scope: Cluster
+    permissions:
+      - apiGroups:
+          - ""
+          - "batch"
+          - "apps"
+          - "litmuschaos.io"
+        resources:
+          - "jobs"
+          - "pods"
+          - "pods/log"
+          - "pods/exec"
+          - "deployments"
+          - "statefulsets"
+          - "events"
+          - "chaosengines"
+          - "chaosexperiments"
+          - "chaosresults"
+        verbs:
+          - "create"
+          - "list"
+          - "get"
+          - "patch"
+          - "update"
+          - "delete"
+          - "deletecollection"
+      - apiGroups:
+          - ""
+        resources: 
+          - "nodes"
+        verbs:
+          - "get"
+          - "list"
+          - "create"
+          - "patch"
+          - "update"
+    image: "{{ .Values.image.litmusGO.repository }}:{{ .Values.image.litmusGO.tag }}"
+    imagePullPolicy: {{ .Values.image.litmusGO.pullPolicy }}
+    args:
+    - -c
+    - ./experiments -name pod-autoscaler
+    command:
+    - /bin/bash
+    env:
+
+    - name: TOTAL_CHAOS_DURATION
+      value: '60'
+
+    # Period to wait before and after injection of chaos in sec
+    - name: RAMP_TIME
+      value: ''
+
+    # Number of replicas to scale
+    - name: REPLICA_COUNT
+      value: '5'
+
+    # PROVIDE THE LIB HERE
+    # ONLY LITMUS SUPPORTED
+    - name: LIB
+      value: 'litmus'
+
+    labels:
+      name: pod-autoscaler
+      app.kubernetes.io/part-of: litmus
+{{ end }}

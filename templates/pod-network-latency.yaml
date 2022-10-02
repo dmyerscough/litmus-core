@@ -1,0 +1,123 @@
+{{ if not (has "pod-network-latency" .Values.experiments.disabled) }}
+---
+apiVersion: litmuschaos.io/v1alpha1
+description:
+  message: |
+    Injects network latency on pods belonging to an app deployment
+kind: ChaosExperiment
+metadata:
+  name: pod-network-latency
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubernetes-chaos.labels" . | indent 4 }}
+spec:
+  definition:
+    scope: Namespaced
+    permissions:
+      - apiGroups:
+          - ""
+          - "batch"
+          - "apps"
+          - "apps.openshift.io"
+          - "argoproj.io"
+          - "litmuschaos.io"
+        resources:
+          - "jobs"
+          - "pods"
+          - "pods/log"
+          - "replicationcontrollers"
+          - "deployments"
+          - "statefulsets"
+          - "daemonsets"
+          - "replicasets"
+          - "deploymentconfigs"
+          - "rollouts"
+          - "pods/exec"
+          - "events"
+          - "chaosengines"
+          - "chaosexperiments"
+          - "chaosresults"
+        verbs:
+          - "create"
+          - "list"
+          - "get"
+          - "patch"
+          - "update"
+          - "delete"
+          - "deletecollection"
+    image: "{{ .Values.image.litmusGO.repository }}:{{ .Values.image.litmusGO.tag }}"
+    imagePullPolicy: {{ .Values.image.litmusGO.pullPolicy }}
+    args:
+    - -c
+    - ./experiments -name pod-network-latency
+    command:
+    - /bin/bash
+    env:
+
+    - name: TARGET_CONTAINER
+      value: ''
+
+    - name: NETWORK_INTERFACE
+      value: 'eth0'
+
+    - name: TC_IMAGE
+      value: "{{ .Values.image.networkChaos.tcImage }}"
+
+    # provide lib image
+    - name: LIB_IMAGE
+      value: "{{ .Values.image.litmusLIBImage.repository }}:{{ .Values.image.litmusLIBImage.tag }}"
+
+    - name: NETWORK_LATENCY
+      value: '2000' #in ms
+
+    - name: TOTAL_CHAOS_DURATION
+      value: '60' # in seconds
+
+    # Time period to wait before injection of chaos in sec
+    - name: RAMP_TIME
+      value: ''
+    
+    - name: JITTER
+      value: '0'
+
+    - name: LIB
+      value: 'litmus'
+
+    # percentage of total pods to target
+    - name: PODS_AFFECTED_PERC
+      value: ''
+
+    - name: TARGET_PODS
+      value: ''
+
+    ## it defines the sequence of chaos execution for multiple target pods
+    ## supported values: serial, parallel
+    - name: SEQUENCE
+      value: 'parallel'      
+
+    # provide the destination ips
+    # chaos injection will be triggered for these destination ips
+    - name: DESTINATION_IPS
+      value: ''
+
+    # provide the destination hosts
+    # chaos injection will be triggered for these destination hosts
+    - name: DESTINATION_HOSTS
+      value: ''
+
+    # provide the name of container runtime
+    # for litmus LIB, it supports docker, containerd, crio
+    # for pumba LIB, it supports docker only
+    - name: CONTAINER_RUNTIME
+      value: "{{ .Values.environment.runtime }}"
+    
+    # provide the container runtime socket path
+    # default set to std docker sock file path
+    - name: SOCKET_PATH
+      value: "{{ .Values.environment.socketPath }}"
+
+    labels:
+      name: pod-network-latency
+      app.kubernetes.io/part-of: litmus
+      app.kubernetes.io/runtime-api-usage: "true"
+{{ end }}

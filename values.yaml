@@ -1,0 +1,68 @@
+# Default values for kubernetes
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: "k8s"
+fullnameOverride: "k8s"
+
+# -- Additional labels
+customLabels: {}
+
+serviceAccount:
+  name: k8s-chaos
+
+image:
+  litmus:
+    repository: litmuschaos/ansible-runner
+    tag: 2.13.0
+    pullPolicy: Always
+
+  litmusGO:
+    repository: litmuschaos/go-runner
+    tag: 2.13.0
+    pullPolicy: Always
+
+  pumba:
+    libName: pumba
+
+  litmusLIBImage:
+    repository: litmuschaos/go-runner
+    tag: 2.13.0
+
+  networkChaos:
+    tcImage: gaiadocker/iproute2
+
+  stressChaos:
+    stressImage: gaiaadm/pumba
+
+  resourceChaos:
+    respository: alexeiled/stress-ng
+    tag: latest-ubuntu
+
+environment:
+  # supported: 'docker', 'containerd', 'crio'
+  runtime: 'docker'
+
+  # ex: '/var/run/docker.sock', '/run/containerd/containerd.sock', '/run/crio/crio.sock'
+  socketPath: '/var/run/docker.sock'
+
+  # ex: '/var/lib/docker/containers', '/var/lib/containerd/io.containerd.runtime.v1.linux/k8s.io', '/var/lib/containers/storage/overlay/'
+  containerPath: '/var/lib/docker/containers'
+
+experiments:
+  disabled:
+    - disk-loss
+    - docker-service-kill
+    - kubelet-service-kill
+    - node-cpu-hog
+    - node-drain
+    - node-io-stress
+    - node-memory-hog
+    - node-taint
+    - pod-autoscaler
+    - pod-http-latency
+    - pod-http-modify-body
+    - pod-http-modify-header
+    - pod-http-reset-peer
+    - pod-http-status-code
+
