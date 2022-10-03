@@ -1,0 +1,29 @@
+apiVersion: v1
+entries:
+  kubernetes-chaos:
+  - apiVersion: v1
+    appVersion: 2.13.0
+    created: "2022-10-02T21:38:52.110126-07:00"
+    description: A Helm chart to install litmus chaos experiments for kubernetes category
+      (chaos-chart)
+    digest: 57fc65487fa5315450782644e9be1c4be882526f869f5c04d119d66a2d666955
+    home: https://litmuschaos.io
+    icon: https://raw.githubusercontent.com/litmuschaos/icons/master/litmus.png
+    keywords:
+    - chaos-engineering
+    - resiliency
+    - kubernetes
+    maintainers:
+    - email: karthik.s@mayadata.io
+      name: ksatchit
+    - email: chandan.kumar@zopsmart.com
+      name: chandankumar4
+    - email: jasssstkn@yahoo.com
+      name: jasstkn
+    name: kubernetes-chaos
+    sources:
+    - https://github.com/litmuschaos/litmus
+    urls:
+    - kubernetes-chaos-2.27.0.tgz
+    version: 2.27.0
+generated: "2022-10-02T21:38:52.109348-07:00"
