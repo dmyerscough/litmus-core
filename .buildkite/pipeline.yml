@@ -1,0 +1,13 @@
+steps:
+  - name: "🔨 Build"
+    command: .package/package.sh
+    branches: "master"
+    plugins:
+    - thedyrt/change-directory#v0.1.1:
+        cd: ./.package/
+    - docker-compose#v4.5.0:
+        run: package
+        env:
+          - JFROG_API
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,7 @@
+version: '3.6'
+services:
+  package:
+    build: .
+    volumes:
+      - "..:/litmus-kubernetes-chaos"
+    working_dir: /litmus-kubernetes-chaos
