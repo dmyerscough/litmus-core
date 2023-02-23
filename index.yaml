@@ -3,10 +3,10 @@ entries:
   kubernetes-chaos:
   - apiVersion: v1
     appVersion: 2.13.0
-    created: "2022-11-30T17:05:29.95987-08:00"
+    created: "2023-02-22T23:15:42.620168-08:00"
     description: A Helm chart to install litmus chaos experiments for kubernetes category
       (chaos-chart)
-    digest: 52a0c41e60753aebe0966ae10481528481ee3e6875571c423dcc42b99e8d53b6
+    digest: 888f52750e91a824e1ac4306a2a9a979a8bd3103f70e9761e04891a1c55502c0
     home: https://litmuschaos.io
     icon: https://raw.githubusercontent.com/litmuschaos/icons/master/litmus.png
     keywords:
@@ -26,4 +26,4 @@ entries:
     urls:
     - https://dmyerscough.github.io/litmus-kubernetes-chaos/kubernetes-chaos-2.27.0.tgz
     version: 2.27.0
-generated: "2022-11-30T17:05:29.958876-08:00"
+generated: "2023-02-22T23:15:42.619301-08:00"
