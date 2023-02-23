@@ -17,7 +17,6 @@ rules:
   resources:
   - "jobs"
   - "pods"
-  - "pods/exec"
   - "pods/log"
   - "pods/eviction"
   - "daemonsets"
